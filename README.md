@@ -17,7 +17,6 @@
  fencing notices and wanted it filtered at the the alert generation stage.
 
 ## Sample configuration (cib fragment in xml notation)
- ================================
 
 ```
   <alert id="alert_webcluster1" path="/var/lib/pacemaker/alert_syslog.sh">
