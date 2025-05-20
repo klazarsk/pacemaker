@@ -1,0 +1,20 @@
+---
+- name: Deploy alert_syslog
+  hosts: nodes
+  become: yes
+  gather_facts: no
+
+  tasks:
+  - name: Copy the alert script to the nodes
+    copy:
+      src: alert_syslog.sh
+      mode: 0750
+      owner: hacluster
+      group: haclient
+      dest: /var/lib/pacemaker/alert_syslog.sh   
+     
+
+  - name: remove the debug script
+    file:
+      dest: /var/lib/pacemaker/alert_syslog_actual.sh
+      state: absent
