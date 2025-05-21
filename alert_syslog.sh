@@ -94,9 +94,20 @@
 
 #
 
-#_# Take alert types out of optAlertKinds to disable alerts
-# optAlertKinds="fencing,node,resource,attribute"
-optAlertKinds="fencing"
+
+if [ -z $RHA_alert_kinds ]; then
+  optAlertKinds="${RHA_alert_kinds}"
+else
+  
+  #_#########################################################
+  # Pass "RHA_alert_kinds" as an option at the pcs alert create
+  # stage, otherwise if the variable is null/not set by alert 
+  # options assignment, take the value in this stanza
+  #_# Take alert types out of optAlertKinds to disable alerts
+  # optAlertKinds="fencing,node,resource,attribute"
+  optAlertKinds="fencing"
+
+fi
 
 strNodeName=$(hostname)
 strClusterName="$(crm_attribute --query -n cluster-name)"
