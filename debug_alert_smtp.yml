@@ -1,5 +1,5 @@
 ---
-- name: Deploy alert_syslog with debug mode
+- name: Deploy alert_smtp with debug mode
   hosts: nodes
   become: yes
   gather_facts: no
@@ -7,17 +7,17 @@
   tasks:
   - name: Copy the alert script to the nodes
     copy:
-      src: alert_syslog.sh
+      src: alert_smtp.sh
       mode: 0750
       owner: hacluster
       group: haclient
-      dest: /var/lib/pacemaker/alert_syslog_actual.sh   
+      dest: /var/lib/pacemaker/alert_smtp_actual.sh   
      
 
   - name: copy the debug script to the nodes 
     copy:
-      src: alert_syslog_debug.sh
+      src: alert_smtp_debug.sh
       mode: 0750
       owner: hacluster
       group: haclient
-      dest: /var/lib/pacemaker/alert_syslog.sh
+      dest: /var/lib/pacemaker/alert_smtp.sh

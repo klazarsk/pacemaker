@@ -56,8 +56,10 @@
 # Take alert types out of optAlertKinds to disable alerts
   if [ -z ${RHA_alert_kinds} ]; then
   
-    #_# optAlertKinds="fencing,node,resource,attribute"
-    optAlertKinds="fencing"
+    # ALL alerts (unfiltered)
+    optAlertKinds="fencing,node,resource,attribute"
+    # ONLY fencing alerts:
+    # optAlertKinds="fencing"
   
   else
    
