@@ -5,7 +5,7 @@
   gather_facts: no
 
   tasks:
-  - name: Copy the alert_smtp script to the nodes
+  - name: Copy the alert_syslog script to the nodes
     copy:
       src: alert_syslog.sh
       mode: 0750
@@ -16,5 +16,5 @@
 
   - name: remove the debug alert_syslog script
     file:
-      dest: /var/lib/pacemaker/alert_syslog.sh
+      dest: /var/lib/pacemaker/alert_syslog_actual.sh
       state: absent

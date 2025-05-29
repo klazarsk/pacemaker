@@ -105,7 +105,7 @@ else
   # options assignment, take the value in this stanza
   #_# Take alert types out of optAlertKinds to disable alerts
   # optAlertKinds="fencing,node,resource,attribute"
-  optAlertKinds="fencing"
+  optAlertKinds="fencing,node,resource,attribute"
 
 fi
 

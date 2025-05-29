@@ -78,9 +78,9 @@ email_recipient_default="root"
 : ${email_sender=${email_sender_default}}
 email_recipient="${CRM_alert_recipient-${email_recipient_default}}"
 
-node_name=`uname -n`
-cluster_name=`crm_attribute --query -n cluster-name -q`
-email_body=`env | grep CRM_alert_ ; env | grep RHA_[as]; echo -e "\n note: Email notifications limited to alert types: ${optAlertKinds}\n"`
+node_name=$(uname -n)
+cluster_name=$(crm_attribute --query -n cluster-name -q)
+email_body=$(env | grep CRM_alert_ ; env | grep RHA_[as]; echo -e "\n note: Email notifications limited to alert types: ${optAlertKinds}\n")
 
 if [ ! -z "${email_sender##*@*}" ]; then
     email_sender="${email_sender}@${node_name}"
