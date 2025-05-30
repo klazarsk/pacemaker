@@ -95,7 +95,7 @@
 #
 
 
-if [ -z $RHA_alert_kinds ]; then
+if [ ! -z $RHA_alert_kinds ]; then
   optAlertKinds="${RHA_alert_kinds}"
 else
   
@@ -147,22 +147,24 @@ else
       if [[ $optAlertKinds == *"resource"* ]]; then 
         if [ ${CRM_alert_interval} = "0" ]; then
           CRM_alert_interval=""
-          strSummary="${strClusterName} resource alert on ${strNodeName} at ${CRM_alert_timestamp}."
         else
           CRM_alert_interval=" (${CRM_alert_interval})"
-          strSummary="${strClusterName} resource alert on ${strNodeName} at ${CRM_alert_timestamp}."
         fi
   
         if [ ${CRM_alert_target_rc} = "0" ]; then
           CRM_alert_target_rc=""
-          strSummary="${strClusterName} resource alert on ${strNodeName} at ${CRM_alert_timestamp}."
         else
           CRM_alert_target_rc=" (target: ${CRM_alert_target_rc})"
-          strSummary="${strClusterName} resource alert on ${strNodeName} at ${CRM_alert_timestamp}."
         fi
+
+        if [[ ${CRM_alert_desc} == "Timed Out" ]]; then 
+          RHA_syslog_priority="crit"
+          strSummary="CRITICAL FAILURE: ${CRM_alert_timestamp} ${cluster_name}: Resource operation '${CRM_alert_task}${CRM_alert_interval}' for '${CRM_alert_rsc}' on '${CRM_alert_node}' ${CRM_alert_desc}${CRM_alert_target_rc}"
+        fi  
+
         case ${CRM_alert_desc} in
           Cancelled) 
-            unset strSummary
+            strSummary="${CRM_alert_timestamp} ${cluster_name}: Resource operation '${CRM_alert_task}${CRM_alert_interval}' for '${CRM_alert_rsc}' on '${CRM_alert_node}': ${CRM_alert_desc}${CRM_alert_target_rc}"
           ;;
         esac
       fi
@@ -181,6 +183,6 @@ fi
 
 if [ ! -z "${strSummary}" ]; then
   strNotice="${strSummary}::${strNotice}"
-  logger  ${optSyslogServer} ${optSyslogPort} -p ${RHA_syslog_facility}.${RHA_syslog_priority} ${optTag} "${RHA_syslog_tag}:(${RHA_syslog_facility}.${RHA_syslog_priority}) :: $( echo \"${strNotice}\" | tr '\n' ' ')"
+  logger  ${optSyslogServer} ${optSyslogPort} -p ${RHA_syslog_facility}.${RHA_syslog_priority} ${optTag} "${RHA_syslog_tag}:(${RHA_syslog_facility}.${RHA_syslog_priority}) :: $( echo \" ${strNotice}\" | tr '\n' ' ')" 
   echo -e "strNotice value: \n {\n${strNotice}\n}" 1>&2
 fi
