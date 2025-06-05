@@ -1,21 +1,27 @@
-# Pacemaker Syslog Alert Agent 
+# NOTE: This repo was only an initial effort; please use https://github.com/klazarsk/alert-agents moving forward.
+# alert_syslog.sh: Sample Pacemaker Syslog Alert Agent 
 
 ## Derived from alert_smtp.sh in the pacemaker package
 
  Adapted from alert_smtp.sh from the pacemaker package 
  by klazarsk@redhat.com for one of our users, May 2025
 
- Compare to alert_smtp to see how trivial this was to adapt. 
+ Compare to alert_smtp.sh.sample to see how trivial this was to adapt. 
  The complication arises in filtering and steering the alerts for
  users who want to the filtering done at the origin service rather
  than on the syslog aggregator.
 
  You can improve upon the granularity of the alerting by matching 
  substrings in variables such as CRM_alert_desc and testing other
- variables and creating more complex cases to drive filtering and turning 
- individual alerts off and on. In this user's case, they only wanted 
- fencing notices and wanted it filtered at the the alert generation stage.
-
+ variables and creating more complex cases to drive filtering and 
+ turning individual alerts off and on. In this user's case, they 
+ only wanted fencing notices and wanted it to be filtered at the 
+ the alert generation stage rather than at the aggregator.
+ 
+ In this example, I override the user-defined priority setting in
+ cases where the services actually fail to start, in which case I 
+ set the script to flag the notices as `crit`
+ 
 ## Sample configuration (cib fragment in xml notation)
 
 ```
@@ -35,7 +41,7 @@
       
    RHA_syslog_facility
 
-    This is the syslog alert facility (`man 3 syslog`)
+    This is to specify the syslog alert facility (`man 3 syslog`)
 
       Examples:
 
@@ -43,27 +49,29 @@
 
          LOCAL0 - LOCAL7 are for custom use, for alerting mechanisms such as this script
 
-         Note it is typical for sysadmins to specify these in lower case and not include the LOG_ prefix
+         Note it is typical for sysadmins to specify these in lower case and not include the LOG_ prefix:
 
-         LOG_AUTH =/= auth, and local0 =/= LOG_LOCAL0
+         LOG_AUTH ≌ auth, and local0 ≌ LOG_LOCAL0
 
    RHA_syslog_priority
 
-     This is the syslog alert log level (`man 3 syslog`)
+     This is to specify the syslog alert log level (`man 3 syslog`)
 
        Examples:
 
          LOG_EMERG, LOG_ALERT, LOG_CRIT, ERR, WARNING, NOTICE, INFO, DEBUG
 
-         Note it is typical for sysadmins to specify these in lower case and not include the LOG_ prefix
+         Note it is typical for sysadmins to specify these in lower case and not include the LOG_ prefix:
+         
+         LOG_CRIT ≌ crit, and LOG_ERR ≌ err
 
    RHA_syslog_tag
 
-     This is the syslog "tag" attribute which is supported by many aggreggators, useful for additional filtering
+     This is the syslog "tag" attribute which is supported by many aggreggators, useful for driving more precise filtering. For example, to direct error routing for different 
 
    RHA_syslog_port
 
-     This is the port the syslog aggregator is listening on 
+     This is the port the syslog aggregator is listening on.
 
    RHA_syslog_proto
    
@@ -76,10 +84,12 @@
    the facility to be specified in all lower case, and the LOG_ prefix to be 
    dropped. So these examples would be typical:
 
+```   
    local2.*    /var/log/pacemaker/syslog # Capture ALL notices sent to LOG_LOCAL2 to /var/log/pacemaker/syslog
 
    local2.err  /var/log/pacemaker/errorlog # capture all notices of ERR or greater priority to /var/log/paceemaker/errorlog
- 
+```
+   
 ## Installation:
 
 ### Place alert_syslog.sh in pacemaker lib dirctory (typically /var/lib/pacemaker)
